@@ -19,13 +19,13 @@ public class Uteis {
         try{
 
             byte[] buffer = new byte[1024];
-            //Armazena todos os bytes lidos
+            /**Armazena todos os bytes lidos*/
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            //descobrir a quantidade de bytes lidos
+            /**descobrir a quantidade de bytes lidos*/
             int bytesLidos;
-            //lendo um byte por vez
+            /**lendo um byte por vez*/
             while ((bytesLidos = ls.read(buffer)) != -1){
-                //copia a quantidade de bytes lidos do buffer para o byteArrayOutputStream
+                /**copia a quantidade de bytes lidos do buffer para o byteArrayOutputStream*/
                 byteArrayOutputStream.write(buffer, 0, bytesLidos);
             }
             return new String(byteArrayOutputStream.toByteArray(), "UTF-8");
@@ -37,12 +37,14 @@ public class Uteis {
 
     public static Bitmap downloadImageMovie(String urlImage){
         try {
+            /**Monta a URL a partir de uma String*/
             URL url = new URL("http://image.tmdb.org/t/p/w185/"+urlImage);
+            /**riamos o objeto HttpURLConnection e obtemos a conexão com determinada url atraves do meotdo .openConnection.*/
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            connection.setDoInput(true); /**Informa que iremos apenas realizar leitura nessa determinada conexão*/
+            connection.connect(); /**estabelece uma conexão com o servidor*/
+            InputStream input = connection.getInputStream(); /**realiza o download da imagem*/
+            Bitmap myBitmap = BitmapFactory.decodeStream(input); /**converte os bytes de retono do servidor em um bitmap**/
             return myBitmap;
         } catch (Exception e) {
             return null;

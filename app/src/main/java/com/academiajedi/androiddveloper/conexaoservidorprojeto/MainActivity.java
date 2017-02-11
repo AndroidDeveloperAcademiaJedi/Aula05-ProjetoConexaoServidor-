@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements RecycleViewClickH
             @Override
             public void onClick(View v) {
                 moviesNowList = new ArrayList<MoviesNow>();
-                new getMovies().execute();
+                new getMovies().execute(); /** Executa o nosso asyncTask **/
             }
         });
 
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements RecycleViewClickH
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rvMovies.setLayoutManager(llm);
 
-        veriifyShared();
+        veriifyShared();/** verifica no shared a opção que o usuario marcou na tela de configurações **/
     }
 
     public void veriifyShared(){
@@ -61,11 +61,12 @@ public class MainActivity extends AppCompatActivity implements RecycleViewClickH
         if(valor != ""){
             if(valor.equals("sim")){
                 moviesNowList = new ArrayList<MoviesNow>();
-                new getMovies().execute();
+                new getMovies().execute();  /** Executa o nosso asyncTask **/
             }
         }
     }
 
+    /** Chama a tela de detalhes do filme passando o ID do filme em que o usuario clicou **/
     public void chamarMovieDetail(String idMovie){
         Intent i = new Intent(MainActivity.this, DetailMovieActivity.class);
         i.putExtra("movieID", idMovie);
@@ -107,6 +108,9 @@ public class MainActivity extends AppCompatActivity implements RecycleViewClickH
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
+            /** Cria e mostra um progress na tela para informar ao usuario que estamos realizando alguma atividade e que ele deve esperar **/
+
             pdia = new ProgressDialog(MainActivity.this);
             pdia.setMessage("Loading...");
             pdia.show();
@@ -118,14 +122,17 @@ public class MainActivity extends AppCompatActivity implements RecycleViewClickH
             try{
                 String returnStr = "";
 
+                /** Criando um objeto URL atraves de uma String **/
+
                 URL url = new URL(ApiURLs.GET_LIST_MOVIES_NOW);
 
+                /** Obtendo a conexão com o servidor */
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    returnStr = Uteis.bytesParaString(urlConnection.getInputStream());
+                if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {   /** Verificando o response code do servidor, ou seja verificar se foi com sucesso*/
+                    returnStr = Uteis.bytesParaString(urlConnection.getInputStream()); /** Transformando os meus bytes em string **/
                 }
 
-                return convertJsonToMovies(returnStr);
+                return convertJsonToMovies(returnStr); /** convert a string json em uma lista de filmes **/
 
             }catch (Exception e){
                 Log.e("Erro json", e.getMessage());
@@ -151,14 +158,14 @@ public class MainActivity extends AppCompatActivity implements RecycleViewClickH
 
                 List<MoviesNow> moviesNows = new ArrayList<>();
 
-                JSONObject jsonReturnApi = new JSONObject(json);
-                JSONArray jsonArray = jsonReturnApi.getJSONArray("results");
+                JSONObject jsonReturnApi = new JSONObject(json);  /** converto a minha string em um objeto do tipo JsonObject **/
+                JSONArray jsonArray = jsonReturnApi.getJSONArray("results"); /** Vamos capturar no nosso json que o servidor retorno a tag results que é um JSONArray */
 
-                for (int i = 0; i<jsonArray.length(); i++){
+                for (int i = 0; i<jsonArray.length(); i++){  /*** Vamos percorrer o nosso JsonArray para mostrar o nosso objeto de filmes */
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                     MoviesNow moviesNow = new MoviesNow();
-                    moviesNow.setId(jsonObject.getString("id"));
+                    moviesNow.setId(jsonObject.getString("id")); /*** recuperar um determinado valor do nosso json e atribuindo na nossa variavel */
                     moviesNow.setImageMovie(Uteis.downloadImageMovie(jsonObject.getString("poster_path")));
                     moviesNow.setOriginal_title(jsonObject.getString("original_title"));
                     moviesNow.setPoster_path(jsonObject.getString("poster_path"));

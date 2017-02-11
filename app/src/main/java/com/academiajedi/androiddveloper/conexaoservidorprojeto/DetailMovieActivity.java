@@ -78,8 +78,9 @@ public class DetailMovieActivity extends AppCompatActivity {
                 // Set up the input
                 final EditText input = new EditText(DetailMovieActivity.this);
                 input.setHint("Ex.: 8");
-                input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(1)});                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(1)});
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
+
                 builder.setView(input);
 
                 // Set up the buttons
@@ -150,12 +151,18 @@ public class DetailMovieActivity extends AppCompatActivity {
                 urlConnection.setReadTimeout(10000);
                 urlConnection.setConnectTimeout(15000);
                 urlConnection.setRequestMethod(String.valueOf(MetodosHTTP.POST));
-                urlConnection.setDoInput(true);
-                urlConnection.setDoOutput(true);
+                urlConnection.setDoInput(true); /**Informa que iremos realizar operacao de leitura nessa determinada conexão*/
+                urlConnection.setDoOutput(true);/**Informa que iremos realizar operacao de escrita nessa determinada conexão, ou seja, iremos enviar alguma parametro no seu corpo*/
 
+                /**
+                 * O nosso servidor espera um json, entao vamos converter a nossa string em um objeto JsonObject
+                 */
                 JSONObject json = new JSONObject();
                 json.put("value",Double.parseDouble(voto));
 
+                /**
+                 * Vamos transformar agora o nosso jsonObjet em bytes para enviar para o servidor
+                 */
                 OutputStream out = urlConnection.getOutputStream();
                 out.write(json.toString().getBytes());
                 out.close();
